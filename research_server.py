@@ -7,7 +7,7 @@ from mcp.server.fastmcp import FastMCP
 PAPER_DIR = "papers"
 
 # Initialize FastMCP server
-mcp = FastMCP("research", port=8001)
+mcp = FastMCP("research", host="0.0.0.0", port=8001)
 
 @mcp.tool()
 def search_papers(topic: str, max_results: int = 5) -> List[str]:
@@ -22,7 +22,7 @@ def search_papers(topic: str, max_results: int = 5) -> List[str]:
         List of paper IDs found in the search
     """
 
-    # Use arxiv to find the papers 
+    # Use arxiv to find the papers
     client = arxiv.Client()
 
     # Search for the most relevant articles matching the queried topic
@@ -47,7 +47,7 @@ def search_papers(topic: str, max_results: int = 5) -> List[str]:
     except (FileNotFoundError, json.JSONDecodeError):
         papers_info = {}
 
-    # Process each paper and add to papers_info  
+    # Process each paper and add to papers_info
     paper_ids = []
     for paper in papers:
         paper_ids.append(paper.get_short_id())
@@ -165,7 +165,7 @@ def get_topic_papers(topic: str) -> str:
 @mcp.prompt()
 def generate_search_prompt(topic: str, num_papers: int = 5) -> str:
     """Generate a prompt for Claude to find and discuss academic papers on a specific topic."""
-    return f"""Search for {num_papers} academic papers about '{topic}' using the search_papers tool. 
+    return f"""Search for {num_papers} academic papers about '{topic}' using the search_papers tool.
 
     Follow these instructions:
     1. First, search for papers using search_papers(topic='{topic}', max_results={num_papers})
